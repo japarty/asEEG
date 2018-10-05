@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# wersja/version 1.8
+# wersja/version 1.9
 
 """Prosty modul do nauki filtrowania oraz transformowania sygnalu.
 Simple module for signal filtering and fast Fourier transform.
@@ -210,6 +210,7 @@ def rysujFFT(sygnal, show_plot=True):
 
     """
     wynik = 2*abs(np.fft.fft(sygnal*sig.hamming(len(sygnal))))/len(sygnal)
+    wynik=np.conjugate(wynik)*wynik
     if len(sygnal) % 256 == 0:
         f = np.linspace(0, 256, len(sygnal))
     else:
@@ -217,6 +218,8 @@ def rysujFFT(sygnal, show_plot=True):
     plt.figure()
     plt.plot(f, wynik)
     plt.xlim([0, 50])
+    plt.xlabel("czestotliwosc [Hz]")
+    plt.ylabel(r'PSD [$\mu V^2$/Hz]')
     if show_plot:
         plt.show()
 
