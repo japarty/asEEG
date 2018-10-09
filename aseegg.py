@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-# wersja/version 1.9
+# wersja/version 1.9.1
 
 """Prosty modul do nauki filtrowania oraz transformowania sygnalu.
 Simple module for signal filtering and fast Fourier transform.
-
 """
 
 import scipy.signal as sig
@@ -13,12 +12,10 @@ import matplotlib.pyplot as plt
 
 def gornoprzepustowy(sygnal, czestProbkowania, czestOdciecia):
     """Filtr gornoprzepustowy  (high-pass filter).
-
     Notes
     -----
     Polish: zauwaz, iz rzad filtra jest z gory narzucony (4).
     English: note that filter order is fixed (4).
-
     Parameters
     ----------
     sygnal : array_like
@@ -35,13 +32,11 @@ def gornoprzepustowy(sygnal, czestProbkowania, czestOdciecia):
         przepuscic sygnal.
         English: cut-off frequency. Only frequencies above this value will be
         passed.
-
     Returns
     -------
     array_like
         Polish: wektor z przefiltrowanym sygnalem.
         English: vector containing filtered signal.
-
     """
     rzad = 4
     czestOdciecia = czestOdciecia/(czestProbkowania*0.5)
@@ -52,12 +47,10 @@ def gornoprzepustowy(sygnal, czestProbkowania, czestOdciecia):
 
 def dolnoprzepustowy(sygnal, czestProbkowania, czestOdciecia):
     """Filtr dolnoprzepustowy  (low-pass filter).
-
     Notes
     -----
     Polish: zauwaz, iz rzad filtra jest z gory narzucony (4).
     English: note that filter order is fixed (4).
-
     Parameters
     ----------
     sygnal : array_like
@@ -74,13 +67,11 @@ def dolnoprzepustowy(sygnal, czestProbkowania, czestOdciecia):
         przepuscic sygnal.
         English: cut-off frequency. Only frequencies below this value will be
         passed.
-
     Returns
     -------
     array_like
         Polish: wektor z przefiltrowanym sygnalem.
         English: vector containing filtered signal.
-
     """
     rzad = 4
     czestOdciecia = czestOdciecia/(czestProbkowania*0.5)
@@ -92,12 +83,10 @@ def dolnoprzepustowy(sygnal, czestProbkowania, czestOdciecia):
 def pasmowoprzepustowy(sygnal, czestProbkowania,
                        czestOdciecia1, czestOdciecia2):
     """Filtr pasmowoprzepustowy  (band-pass filter).
-
     Notes
     -----
     Polish: zauwaz, iz rzad filtra jest z gory narzucony (4).
     English: note that filter order is fixed (4).
-
     Parameters
     ----------
     sygnal : array_like
@@ -115,13 +104,11 @@ def pasmowoprzepustowy(sygnal, czestProbkowania,
     czestOdciecia2 : int
         Polish: gorna granica filtra.
         English: upper filter cut-off frequency.
-
     Returns
     -------
     array_like
         Polish: wektor z przefiltrowanym sygnalem.
         English: vector containing filtered signal.
-
     """
     rzad = 4
     czestOdciecia1 = czestOdciecia1/(czestProbkowania*0.5)
@@ -133,12 +120,10 @@ def pasmowoprzepustowy(sygnal, czestProbkowania,
 
 def pasmowozaporowy(sygnal, czestProbkowania, czestOdciecia1, czestOdciecia2):
     """Filtr pasmowozaporowy  (band-stop filter).
-
     Notes
     -----
     Polish: zauwaz, iz rzad filtra jest z gory narzucony (4).
     English: note that filter order is fixed (4).
-
     Parameters
     ----------
     sygnal : array_like
@@ -156,13 +141,11 @@ def pasmowozaporowy(sygnal, czestProbkowania, czestOdciecia1, czestOdciecia2):
     czestOdciecia2 : int
         Polish: gorna granica filtra.
         English: upper filter cut-off frequency.
-
     Returns
     -------
     array_like
         Polish: wektor z przefiltrowanym sygnalem.
         English: vector containing filtered signal.
-
     """
     rzad = 4
     czestOdciecia1 = czestOdciecia1/(czestProbkowania*0.5)
@@ -174,28 +157,24 @@ def pasmowozaporowy(sygnal, czestProbkowania, czestOdciecia1, czestOdciecia2):
 
 def FFT(sygnal):
     """Szybka transformacja Fouriera (fast Fourier transform).
-
     Parameters
     ----------
     sygnal : array_like
         Polish: wektor z wartosciami sygnalu w jednostce czasu.
         English: signal -- vector of values acquired in given timepoints).
         May be array (or list) of: ints, floats, doubles.
-
     Returns
     -------
     array_like
         Polish: przetransformowany sygnal.
         English: transformed signal.
-
     """
-    wynik = 2*abs(np.fft.fft(sygnal*sig.hamming(len(sygnal))))/len(sygnal)
+    wynik = 2*abs(np.fft.fft(sygnal))/len(sygnal)
     return wynik
 
 
 def rysujFFT(sygnal, show_plot=True):
     """Rysuj FFT (plot FFT).
-
     Parameters
     ----------
     sygnal : array_like
@@ -207,9 +186,35 @@ def rysujFFT(sygnal, show_plot=True):
         przydatna gdy chcemy nalozyc na siebie kilka funkcji.
         English: show graph. If it remains unplotted one can overlay a couple
         of functions on the same canvas.
-
     """
-    wynik = 2*abs(np.fft.fft(sygnal*sig.hamming(len(sygnal))))/len(sygnal)
+    wynik = 2*abs(np.fft.fft(sygnal))/len(sygnal)
+    if len(sygnal) % 256 == 0:
+        f = np.linspace(0, 256, len(sygnal))
+    else:
+        f = np.linspace(0, 200, len(sygnal))
+    plt.figure()
+    plt.plot(f, wynik)
+    plt.xlim([0, 50])
+    plt.xlabel("czestotliwosc [Hz]")
+    plt.ylabel(r'U [$\mu V$]')
+    if show_plot:
+        plt.show()
+
+def rysujPSD(sygnal, show_plot=True):
+    """Rysuj PSD (plot PSD).
+    Parameters
+    ----------
+    sygnal : array_like
+        Polish: wektor z wartosciami sygnalu w jednostce czasu.
+        English: signal -- vector of values acquired in given timepoints).
+        May be array (or list) of: ints, floats, doubles.
+    show_plot : bool, optional
+        Polish: pokaz wygenerowany wykres lub tego nie rob. Ta druga opcja jest
+        przydatna gdy chcemy nalozyc na siebie kilka funkcji.
+        English: show graph. If it remains unplotted one can overlay a couple
+        of functions on the same canvas.
+    """
+    wynik = 2*abs(np.fft.fft(sygnal))/len(sygnal)
     wynik=np.conjugate(wynik)*wynik
     if len(sygnal) % 256 == 0:
         f = np.linspace(0, 256, len(sygnal))
@@ -223,13 +228,10 @@ def rysujFFT(sygnal, show_plot=True):
     if show_plot:
         plt.show()
 
-
 def spektrogram(data, Fs, colormap=plt.cm.Accent, show_plot=True, ylim=50):
     """Generowanie spektrogramu (plotting spectrogram).
-
     Polish: wykres zaleznosci rozkladu czestotliwosci od czasu.
     English: plotting frequencies versus time.
-
     Parameters
     ----------
     data : array_like
@@ -252,7 +254,6 @@ def spektrogram(data, Fs, colormap=plt.cm.Accent, show_plot=True, ylim=50):
     ylim : int, optional
         Polish: do ktorego punktu osi OX pokazac wykres.
         English: to which value at X axis show the plot.
-
     """
     plt.figure()
     data_padded = (np.concatenate((np.zeros(200), data, np.zeros(200))))
@@ -271,18 +272,15 @@ def spektrogram(data, Fs, colormap=plt.cm.Accent, show_plot=True, ylim=50):
 
 def formatujPlik(sciezka):
     """Formatuj plik CSV (format CSV file).
-
     Notes
     -----
     Polish: zauwaz, iz operacja nadpisuje plik.
     English: note that this function overwrites the file.
-
     Parameters
     ----------
     sciezka : str
         Polish: sciezka dostepu do pliku.
         English: file path.
-
     """
     nazwapliku = ''.join(["\\\\" if i == "\\" else i for i in sciezka])
 
