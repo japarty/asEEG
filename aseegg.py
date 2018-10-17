@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# wersja/version 1.9.1
+# wersja/version 1.9.2
 
 """Prosty modul do nauki filtrowania oraz transformowania sygnalu.
 Simple module for signal filtering and fast Fourier transform.
@@ -282,17 +282,24 @@ def formatujPlik(sciezka):
         Polish: sciezka dostepu do pliku.
         English: file path.
     """
-    nazwapliku = ''.join(["\\\\" if i == "\\" else i for i in sciezka])
+    from sys import platform
+    if platform == "linux" or platform == "linux2":
+        nazwapliku = ''.join(["////" if i == "//" else i for i in sciezka])
+    elif platform == "darwin":
+        nazwapliku = ''.join(["////" if i == "//" else i for i in sciezka])
+    elif platform == "win32":
+        nazwapliku = ''.join(["\\\\" if i == "\\" else i for i in sciezka])
 
     with open(nazwapliku, 'r') as plikWejsciowy:
         dane = plikWejsciowy.read().splitlines(True)
+
+    samplingRate=dane[2][15:18]
+    daneTemp=[linia for linia in dane if not linia[0]=="%"]
+    if samplingRate=='200':
+        daneTemp.insert(0, "lp, e1, e2, e3, e4, trigger\n")
+    elif samplingRate=='250':
+        daneTemp.insert(0, "lp, e1, e2, e3, e4, e5, e6, e7, e8, a1, a2, a3\n")
+
     with open(nazwapliku, 'w') as plikWyjsciowy:
-        if dane[0][0] == 'l':
-            [plikWyjsciowy.writelines(linia) for linia in dane]
-        elif dane[0][1] != ' ':
-            plikWyjsciowy.writelines("lp, e1, e2, e3, e4, trigger\n")
-            [plikWyjsciowy.writelines(linia.replace(',', ', ')) for linia in dane]
-        else:
-            plikWyjsciowy.writelines("lp, e1, e2, e3, e4, e5, e6, e7, e8, a1, a2, a3\n")
-            [plikWyjsciowy.writelines(linia.replace(', ', '.').replace('. ', ', '))
-             for linia in dane if linia[0] != '%']
+        [plikWyjsciowy.writelines(linia.replace(',', '.').replace('. ', ', '))
+         for linia in daneTemp]
