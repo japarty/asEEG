@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# wersja/version 1.9.2
+# wersja/version 1.9.3
 
 """Prosty modul do nauki filtrowania oraz transformowania sygnalu.
 Simple module for signal filtering and fast Fourier transform.
@@ -296,7 +296,7 @@ def formatujPlik(sciezka):
     samplingRate=dane[2][15:18]
     daneTemp=[linia for linia in dane if not linia[0]=="%"]
     if samplingRate=='200':
-        daneTemp.insert(0, "lp, e1, e2, e3, e4, trigger\n")
+        daneTemp.insert(0, "lp, e1, e2, e3, e4, trigger, a2, a3, time\n")
     elif samplingRate=='250':
         daneTemp.insert(0, "lp, e1, e2, e3, e4, e5, e6, e7, e8, a1, a2, a3\n")
 
