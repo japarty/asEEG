@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# wersja/version 1.9.3
+# wersja/version 1.9.4
 
 """Prosty modul do nauki filtrowania oraz transformowania sygnalu.
 Simple module for signal filtering and fast Fourier transform.
@@ -283,9 +283,7 @@ def formatujPlik(sciezka):
         English: file path.
     """
     from sys import platform
-    if platform == "linux" or platform == "linux2":
-        nazwapliku = ''.join(["////" if i == "//" else i for i in sciezka])
-    elif platform == "darwin":
+    if platform == "linux" or platform == "linux2" or platform == "darwin":
         nazwapliku = ''.join(["////" if i == "//" else i for i in sciezka])
     elif platform == "win32":
         nazwapliku = ''.join(["\\\\" if i == "\\" else i for i in sciezka])
@@ -294,11 +292,13 @@ def formatujPlik(sciezka):
         dane = plikWejsciowy.read().splitlines(True)
 
     samplingRate=dane[2][15:18]
-    daneTemp=[linia for linia in dane if not linia[0]=="%"]
+    daneTemp=[linia.replace(",",", ") for linia in dane if not linia[0]=="%"]
     if samplingRate=='200':
         daneTemp.insert(0, "lp, e1, e2, e3, e4, trigger, a2, a3, time\n")
     elif samplingRate=='250':
         daneTemp.insert(0, "lp, e1, e2, e3, e4, e5, e6, e7, e8, a1, a2, a3\n")
+    else:
+        daneTemp.insert(0, "lp, e1, e2, e3, e4, trigger\n")
 
     with open(nazwapliku, 'w') as plikWyjsciowy:
         [plikWyjsciowy.writelines(linia.replace(',', '.').replace('. ', ', '))
