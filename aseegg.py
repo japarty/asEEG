@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# wersja/version 1.9.5
+# wersja/version 1.9.6
 
 """Prosty modul do nauki filtrowania oraz transformowania sygnalu.
 Simple module for signal filtering and fast Fourier transform.
@@ -303,7 +303,7 @@ def formatujPlik(sciezka):
         with open(nazwapliku, 'w') as plikWyjsciowy:
             [plikWyjsciowy.writelines(linia.replace(',', '.').replace('. ', ', '))
              for linia in daneTemp]
-    elif dane[0][0:4]=="0,0.":
+    elif dane[0][0:4]=="0,0." or dane[0][0:5]=="0,-0.":
         daneTemp.insert(0, "lp,e1,e2,e3,e4,trigger\n")
         with open(nazwapliku, 'w') as plikWyjsciowy:
             [plikWyjsciowy.writelines(linia.replace(',', ', '))
