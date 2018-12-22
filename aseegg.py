@@ -195,10 +195,11 @@ def rysujFFT(sygnal, show_plot=True):
     plt.figure()
     plt.plot(f, wynik)
     plt.xlim([0, 50])
-    plt.xlabel("czestotliwosc [Hz]")
+    plt.xlabel("Częstotliwość [Hz]")
     plt.ylabel(r'U [$\mu V$]')
     if show_plot:
         plt.show()
+
 
 def rysujPSD(sygnal, show_plot=True):
     """Rysuj PSD (plot PSD).
@@ -215,7 +216,7 @@ def rysujPSD(sygnal, show_plot=True):
         of functions on the same canvas.
     """
     wynik = 2*abs(np.fft.fft(sygnal))/len(sygnal)
-    wynik=np.conjugate(wynik)*wynik
+    wynik = np.conjugate(wynik)*wynik
     if len(sygnal) % 256 == 0:
         f = np.linspace(0, 256, len(sygnal))
     else:
@@ -227,6 +228,7 @@ def rysujPSD(sygnal, show_plot=True):
     plt.ylabel(r'PSD [$\mu V^2$/Hz]')
     if show_plot:
         plt.show()
+
 
 def spektrogram(data, Fs, colormap=plt.cm.Accent, show_plot=True, ylim=50):
     """Generowanie spektrogramu (plotting spectrogram).
@@ -291,19 +293,19 @@ def formatujPlik(sciezka):
     with open(nazwapliku, 'r') as plikWejsciowy:
         dane = plikWejsciowy.read().splitlines(True)
 
-    samplingRate=dane[2][15:18]
-    daneTemp=[linia for linia in dane if not linia[0]=="%"]
-    if samplingRate=='200':
+    samplingRate = dane[2][15:18]
+    daneTemp = [linia for linia in dane if not linia[0] == "%"]
+    if samplingRate == '200':
         daneTemp.insert(0, "lp, e1, e2, e3, e4, trigger, a2, a3, time\n")
         with open(nazwapliku, 'w') as plikWyjsciowy:
             [plikWyjsciowy.writelines(linia.replace(',', '.').replace('. ', ', '))
              for linia in daneTemp]
-    elif samplingRate=='250':
+    elif samplingRate == '250':
         daneTemp.insert(0, "lp, e1, e2, e3, e4, e5, e6, e7, e8, a1, a2, a3\n")
         with open(nazwapliku, 'w') as plikWyjsciowy:
             [plikWyjsciowy.writelines(linia.replace(',', '.').replace('. ', ', '))
              for linia in daneTemp]
-    elif dane[0][0:4]=="0,0." or dane[0][0:5]=="0,-0.":
+    elif dane[0][0:4] == "0,0." or dane[0][0:5] == "0,-0.":
         daneTemp.insert(0, "lp,e1,e2,e3,e4,trigger\n")
         with open(nazwapliku, 'w') as plikWyjsciowy:
             [plikWyjsciowy.writelines(linia.replace(',', ', '))
