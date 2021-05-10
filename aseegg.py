@@ -173,7 +173,7 @@ def FFT(sygnal):
     return wynik
 
 
-def rysujFFT(sygnal, show_plot=True):
+def rysujFFT(sygnal, czestProbkowania, show_plot=True):
     """Rysuj FFT (plot FFT).
     Parameters
     ----------
@@ -181,6 +181,11 @@ def rysujFFT(sygnal, show_plot=True):
         Polish: wektor z wartosciami sygnalu w jednostce czasu.
         English: signal -- vector of values acquired in given timepoints).
         May be array (or list) of: ints, floats, doubles.
+    czestProbkowania : int
+        Polish: czestotliwosc probkowania, ile razy na sekunde sygnal byl
+        pobierany (w herzach).
+        English: sampling frequency, how many samples are there acquires per
+        second (in herz).
     show_plot : bool, optional
         Polish: pokaz wygenerowany wykres lub tego nie rob. Ta druga opcja jest
         przydatna gdy chcemy nalozyc na siebie kilka funkcji.
@@ -188,13 +193,11 @@ def rysujFFT(sygnal, show_plot=True):
         of functions on the same canvas.
     """
     wynik = 2*abs(np.fft.fft(sygnal))/len(sygnal)
-    if len(sygnal) % 256 == 0:
-        f = np.linspace(0, 256, len(sygnal))
-    else:
-        f = np.linspace(0, 200, len(sygnal))
+    f = np.linspace(0, czestProbkowania, len(sygnal))
+
     plt.figure()
     plt.plot(f, wynik)
-    plt.xlim([0, 50])
+    plt.xlim([0, int(czestProbkowania/2)])
     plt.xlabel("Częstotliwość [Hz]")
     plt.ylabel(r'U [$\mu V$]')
     if show_plot:
