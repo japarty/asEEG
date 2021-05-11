@@ -197,7 +197,12 @@ def rysujFFT(sygnal, czestProbkowania, show_plot=True):
 
     plt.figure()
     plt.plot(f, wynik)
-    plt.xlim([0, int(czestProbkowania/2)])
+
+    plt.plot()
+
+    idx = int(czestProbkowania/2) if czestProbkowania < 100 else 50
+
+    plt.xlim([0, idx])
     plt.xlabel("Częstotliwość [Hz]")
     plt.ylabel(r'U [$\mu V$]')
     if show_plot:
