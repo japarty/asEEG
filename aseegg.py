@@ -5,9 +5,9 @@
 Simple module for signal filtering and fast Fourier transform.
 """
 
-import scipy.signal as sig
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import scipy.signal as sig
 
 
 def gornoprzepustowy(sygnal, czestProbkowania, czestOdciecia):
@@ -39,7 +39,7 @@ def gornoprzepustowy(sygnal, czestProbkowania, czestOdciecia):
         English: vector containing filtered signal.
     """
     rzad = 4
-    czestOdciecia = czestOdciecia/(czestProbkowania*0.5)
+    czestOdciecia = czestOdciecia / (czestProbkowania * 0.5)
     [b, a] = sig.butter(rzad, czestOdciecia, 'high')
     wynik = sig.filtfilt(b, a, sygnal)
     return wynik
@@ -74,7 +74,7 @@ def dolnoprzepustowy(sygnal, czestProbkowania, czestOdciecia):
         English: vector containing filtered signal.
     """
     rzad = 4
-    czestOdciecia = czestOdciecia/(czestProbkowania*0.5)
+    czestOdciecia = czestOdciecia / (czestProbkowania * 0.5)
     [b, a] = sig.butter(rzad, czestOdciecia, 'low')
     wynik = sig.filtfilt(b, a, sygnal)
     return wynik
@@ -111,8 +111,8 @@ def pasmowoprzepustowy(sygnal, czestProbkowania,
         English: vector containing filtered signal.
     """
     rzad = 4
-    czestOdciecia1 = czestOdciecia1/(czestProbkowania*0.5)
-    czestOdciecia2 = czestOdciecia2/(czestProbkowania*0.5)
+    czestOdciecia1 = czestOdciecia1 / (czestProbkowania * 0.5)
+    czestOdciecia2 = czestOdciecia2 / (czestProbkowania * 0.5)
     [b, a] = sig.butter(rzad, [czestOdciecia1, czestOdciecia2], 'bandpass')
     wynik = sig.filtfilt(b, a, sygnal)
     return wynik
@@ -148,8 +148,8 @@ def pasmowozaporowy(sygnal, czestProbkowania, czestOdciecia1, czestOdciecia2):
         English: vector containing filtered signal.
     """
     rzad = 4
-    czestOdciecia1 = czestOdciecia1/(czestProbkowania*0.5)
-    czestOdciecia2 = czestOdciecia2/(czestProbkowania*0.5)
+    czestOdciecia1 = czestOdciecia1 / (czestProbkowania * 0.5)
+    czestOdciecia2 = czestOdciecia2 / (czestProbkowania * 0.5)
     [b, a] = sig.butter(rzad, [czestOdciecia1, czestOdciecia2], 'bandstop')
     wynik = sig.filtfilt(b, a, sygnal)
     return wynik
@@ -169,11 +169,11 @@ def FFT(sygnal):
         Polish: przetransformowany sygnal.
         English: transformed signal.
     """
-    wynik = 2*abs(np.fft.fft(sygnal))/len(sygnal)
+    wynik = 2 * abs(np.fft.fft(sygnal)) / len(sygnal)
     return wynik
 
 
-def rysujFFT(sygnal, show_plot=True):
+def rysujFFT(sygnal, czestProbkowania, show_plot=True):
     """Rysuj FFT (plot FFT).
     Parameters
     ----------
@@ -181,20 +181,26 @@ def rysujFFT(sygnal, show_plot=True):
         Polish: wektor z wartosciami sygnalu w jednostce czasu.
         English: signal -- vector of values acquired in given timepoints).
         May be array (or list) of: ints, floats, doubles.
+    czestProbkowania : int
+        Polish: czestotliwosc probkowania, ile razy na sekunde sygnal byl
+        pobierany (w herzach).
+        English: sampling frequency, how many samples are there acquires per
+        second (in herz).
     show_plot : bool, optional
         Polish: pokaz wygenerowany wykres lub tego nie rob. Ta druga opcja jest
         przydatna gdy chcemy nalozyc na siebie kilka funkcji.
         English: show graph. If it remains unplotted one can overlay a couple
         of functions on the same canvas.
     """
-    wynik = 2*abs(np.fft.fft(sygnal))/len(sygnal)
-    if len(sygnal) % 256 == 0:
-        f = np.linspace(0, 256, len(sygnal))
-    else:
-        f = np.linspace(0, 200, len(sygnal))
+    wynik = 2 * abs(np.fft.fft(sygnal)) / len(sygnal)
+    f = np.linspace(0, czestProbkowania, len(sygnal))
+
     plt.figure()
     plt.plot(f, wynik)
-    plt.xlim([0, 50])
+    plt.plot()
+
+    idx = int(czestProbkowania / 2) if czestProbkowania < 100 else 50
+    plt.xlim([0, idx])
     plt.xlabel("Częstotliwość [Hz]")
     plt.ylabel(r'U [$\mu V$]')
     if show_plot:
@@ -215,8 +221,8 @@ def rysujPSD(sygnal, show_plot=True):
         English: show graph. If it remains unplotted one can overlay a couple
         of functions on the same canvas.
     """
-    wynik = 2*abs(np.fft.fft(sygnal))/len(sygnal)
-    wynik = np.conjugate(wynik)*wynik
+    wynik = 2 * abs(np.fft.fft(sygnal)) / len(sygnal)
+    wynik = np.conjugate(wynik) * wynik
     if len(sygnal) % 256 == 0:
         f = np.linspace(0, 256, len(sygnal))
     else:
@@ -261,12 +267,12 @@ def spektrogram(data, Fs, colormap=plt.cm.Accent, show_plot=True, ylim=50):
     data_padded = (np.concatenate((np.zeros(200), data, np.zeros(200))))
     Pxx, freqs, bins, im = plt.specgram(data_padded, NFFT=512, Fs=Fs,
                                         window=sig.hamming(512),
-                                        noverlap=2*Fs-1,
+                                        noverlap=2 * Fs - 1,
                                         # noverlap = Fs-1,
                                         cmap=plt.cm.jet)
 
     plt.ylim(0, ylim)
-    plt.xlim(0, len(data)/Fs)
+    plt.xlim(0, len(data) / Fs)
 
     if show_plot:
         plt.show()
