@@ -307,7 +307,7 @@ def formatujPlik(sciezka):
             [plikWyjsciowy.writelines(linia.replace(',', '.').replace('. ', ', '))
              for linia in daneTemp]
     elif samplingRate == '250':
-        daneTemp.insert(0, "lp, e1, e2, e3, e4, e5, e6, e7, e8, a1, a2, a3\n")
+        daneTemp.insert(0, "lp, e1, e2, e3, e4, e5, e6, e7, e8, a1, a2, a3, a4, a5, time1, time2\n")
         with open(nazwapliku, 'w') as plikWyjsciowy:
             [plikWyjsciowy.writelines(linia.replace(',', '.').replace('. ', ', '))
              for linia in daneTemp]
