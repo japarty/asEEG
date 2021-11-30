@@ -265,12 +265,13 @@ def spektrogram(data, Fs, colormap=plt.cm.Accent, show_plot=True, ylim=50):
     """
     plt.figure()
     data_padded = (np.concatenate((np.zeros(200), data, np.zeros(200))))
-    Pxx, freqs, bins, im = plt.specgram(data_padded, NFFT=512, Fs=Fs,
-                                        window=sig.hamming(512),
-                                        noverlap=2 * Fs - 1,
-                                        # noverlap = Fs-1,
-                                        cmap=plt.cm.jet)
-
+    Pxx, freqs, bins, im = plt.specgram(data_padded, NFFT=256, Fs=Fs,
+                                        window=sig.hamming(256),
+                                        # noverlap=2 * Fs - 1,
+                                        noverlap = Fs-1,
+                                        cmap=plt.cm.jet
+                                        )
+    plt.clim([-25,36])
     plt.ylim(0, ylim)
     plt.xlim(0, len(data) / Fs)
 
